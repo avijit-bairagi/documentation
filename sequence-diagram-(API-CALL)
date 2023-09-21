@@ -1,35 +1,36 @@
-title AUTH SERVER AND GEATEWAY (API CALL)
+title F5, AUTH SERVER, AND GEATEWAY (API CALL)
 actor USER#green
 entryspacing 1.9
 note over USER#yellow:CORPNET/PG/SOAPUP
+participant F5#FF3355
 participant GATEWAY#SILVER
-participant CORPNET-API#green
 participant AUTH-SERVER#red
 note over AUTH-SERVER#yellow:1.....n
-control AUTH-SERVICE#RED
 
 participantgroup #lightgreen **DB/CACHE**
-database AUTH-DB#blue
 database AUTH-CACHE#gren
+database AUTH-DB#blue
 end
 
-bottomparticipants
+participant CORPNET-API#green
 
-USER->GATEWAY:CALL <color:#green>//*/corpnet-api/**//</color>
+bottomparticipants 
 
-note over USER,GATEWAY#33FFA4:**HTTP HEADER\nService-Code: CORPNET/\nCORPNET-GROUP\n**
+USER->F5:CALL <color:#green>//*/corpnet-api/**//</color>
 
-linear
-GATEWAY->AUTH-SERVER: validate request
-AUTH-SERVER->AUTH-SERVICE: validate request
-AUTH-SERVICE->AUTH-DB: validate request
-AUTH-DB->AUTH-CACHE: validate request
-AUTH-DB<-AUTH-CACHE: validate response
-AUTH-SERVICE<-AUTH-DB: validate response
-AUTH-SERVER<-AUTH-SERVICE: validate response
+note over USER,F5#33FFA4:**HTTP HEADER\nService-Code: CORPNET/\nCORPNET-GROUP\n**
 
-GATEWAY<-AUTH-SERVER: validate response
+F5->GATEWAY:FORWARD
+
+GATEWAY->AUTH-SERVER:CALL: AUTHORIZE API
+AUTH-SERVER->AUTH-CACHE: validate request  
+
+AUTH-CACHE<->AUTH-DB: SYNC
+AUTH-SERVER<-AUTH-CACHE: validate response  
+
+GATEWAY<-AUTH-SERVER: RESPONSE: AUTHORIZE API
+
 note over AUTH-SERVER,GATEWAY#33FFA4:** {\n    serviceCode: CORPNET-GROUP,\n    username: SD_MAKER,\n    activeCompany: 2,\n    companyCodes: [2, 3]\n}**
 
-GATEWAY->CORPNET-API: forward request
-note over GATEWAY,CORPNET-API#33FFA4:** HTTP HEADERS\n    Service-Code: CORPNET-GROUP\n    User-Name: SD_MAKER\n    Active-Company: 2\n    Company-Codes: 2,3\n**
+GATEWAY->CORPNET-API:**FORWARD**
+note over GATEWAY,CORPNET-API#33FFA4:**    HTTP HEADERS\n    Service-Code: CORPNET-GROUP\n    User-Name: SD_MAKER\n    Active-Company: 2\n    Company-Codes: 2,3\n**
