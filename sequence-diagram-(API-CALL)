@@ -16,19 +16,19 @@ participant CORPNET-API#green
 
 bottomparticipants 
 
-USER->F5:CALL <color:#green>//*/corpnet-api/**//</color>
+USER->F5:**CALL <color:#green>//*/corpnet-api/**//</color>**
 
-note over USER,F5#33FFA4:**HTTP HEADER\nService-Code: CORPNET/\nCORPNET-GROUP\n**
+note over USER,F5#33FFA4:**HTTP HEADER\nService-Code: CORPNET/\nCORPNET-GROUP\nTOKEN: XXX**
 
-F5->GATEWAY:FORWARD
+F5->GATEWAY:**FORWARD**
 
-GATEWAY->AUTH-SERVER:CALL: AUTHORIZE API
-AUTH-SERVER->AUTH-CACHE: validate request  
+GATEWAY->AUTH-SERVER:**CALL: AUTHORIZE API**
+AUTH-SERVER->AUTH-CACHE: **VALIDATE**  
 
-AUTH-CACHE<->AUTH-DB: SYNC
-AUTH-SERVER<-AUTH-CACHE: validate response  
+AUTH-CACHE<->AUTH-DB: **SYNC**
+AUTH-SERVER<-AUTH-CACHE: **RESPONSE**  
 
-GATEWAY<-AUTH-SERVER: RESPONSE: AUTHORIZE API
+GATEWAY<-AUTH-SERVER: **RESPONSE**
 
 note over AUTH-SERVER,GATEWAY#33FFA4:** {\n    serviceCode: CORPNET-GROUP,\n    username: SD_MAKER,\n    activeCompany: 2,\n    companyCodes: [2, 3]\n}**
 
