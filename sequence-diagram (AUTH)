@@ -1,36 +1,51 @@
-title AUTH SERVER AND GEATEWAY (AUTH REQUEST)
+title F5, GEATEWAY, AND AUTH SERVER (AUTH REQUEST)
 actor USER#green
 entryspacing 1.9
+participant F5#FF3355
 note over USER#yellow:CORPNET/PG/SOAPUP
 participant GATEWAY#silver
 participant AUTH-SERVER#red
 note over AUTH-SERVER#yellow:1.....n
-control AUTH-SERVICE#RED
 
 participantgroup #lightgreen **   EXTERNAL \nDATA SOURCE**
 database CORPNET#green
 database PG#green
-database N#green
+database ...#green
 end
 
 
 participantgroup #lightgreen **    INTERNAL \nDATA SOURCE**
-database AUTH-DB#BLUE
 database AUTH-CACHE#BLACK
+database AUTH-DB#BLUE
 end
 
 bottomparticipants
 
-USER->GATEWAY:CALL <color:#green>//**/auth/***//</color>
+USER->F5:CALL <color:#green>//**/auth/***//</color>
 
-note over USER,GATEWAY#33FFA4:**\nHTTP HEADER\nService-Code: CORPNET/\nCORPNET-GROUP\n**
+note over USER,F5#33FFA4:**\nHTTP HEADER\nService-Code: CORPNET/\nCORPNET-GROUP\n**
 
-linear
-GATEWAY->AUTH-SERVER: forward request
-AUTH-SERVER->AUTH-SERVICE: auth request
-AUTH-SERVICE->CORPNET: AUTHNICATE
-CORPNET->PG:
-PG->N:
-N->AUTH-DB:             SAVE \nTOKEN, PRIVILEGE
-AUTH-DB->AUTH-CACHE:
+F5->GATEWAY:**FORWARD**
+GATEWAY->AUTH-SERVER: **FORWARD**
+
+AUTH-SERVER->CORPNET: **AUTHNICATE**
+
+linear 
+CORPNET<-->PG:
+PG<-->...:
 linear off
+
+CORPNET->AUTH-SERVER: **RESPONSE**
+
+AUTH-SERVER->AUTH-CACHE:**SAVE: <color:#BLUE>TOKEN, PRIVILEGE**</color>
+
+AUTH-CACHE<->AUTH-DB: **SYNC**
+
+AUTH-SERVER<-AUTH-CACHE:**RESPONSE**
+
+
+AUTH-SERVER->GATEWAY: **RESPONSE**
+
+GATEWAY->F5: **RESPONSE**
+
+F5->USER: **RESPONSE**
