@@ -2,7 +2,7 @@ title F5, GEATEWAY, AND AUTH SERVER (AUTH REQUEST)
 actor USER#green
 entryspacing 1.9
 participant F5#FF3355
-note over USER#yellow:CORPNET/PG/SOAPUP
+note over USER#yellow:CORPNET/PG/SOUP UP
 participant GATEWAY#silver
 participant AUTH-SERVER#red
 note over AUTH-SERVER#yellow:1.....n
@@ -21,7 +21,7 @@ end
 
 bottomparticipants
 
-USER->F5:CALL <color:#green>//**/auth/***//</color>
+USER->F5:**CALL** <color:#green>//**/auth/***//</color>
 
 note over USER,F5#33FFA4:**\nHTTP HEADER\nService-Code: CORPNET/\nCORPNET-GROUP\n**
 
@@ -33,11 +33,14 @@ AUTH-SERVER->CORPNET: **AUTHNICATE**
 linear 
 CORPNET<-->PG:
 PG<-->...:
+note over CORPNET,...#33FFA4:**\nONLY ONE DATA SOURCE\n          WILL BE USED\n**
+
 linear off
 
 CORPNET->AUTH-SERVER: **RESPONSE**
 
-AUTH-SERVER->AUTH-CACHE:**SAVE: <color:#BLUE>TOKEN, PRIVILEGE**</color>
+AUTH-SERVER->AUTH-CACHE:**SAVE**
+note over AUTH-SERVER,AUTH-CACHE#33FFA4:**\nTOKEN, PRIVILEGE\n**
 
 AUTH-CACHE<->AUTH-DB: **SYNC**
 
