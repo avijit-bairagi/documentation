@@ -1,0 +1,35 @@
+title AUTH SERVER AND GEATEWAY (API CALL)
+actor USER#green
+entryspacing 1.9
+note over USER#yellow:CORPNET/PG/SOAPUP
+participant GATEWAY#SILVER
+participant CORPNET-API#green
+participant AUTH-SERVER#red
+note over AUTH-SERVER#yellow:1.....n
+control AUTH-SERVICE#RED
+
+participantgroup #lightgreen **DB/CACHE**
+database AUTH-DB#blue
+database AUTH-CACHE#gren
+end
+
+bottomparticipants
+
+USER->GATEWAY:CALL <color:#green>//*/corpnet-api/**//</color>
+
+note over USER,GATEWAY#33FFA4:**HTTP HEADER\nService-Code: CORPNET/\nCORPNET-GROUP\n**
+
+linear
+GATEWAY->AUTH-SERVER: validate request
+AUTH-SERVER->AUTH-SERVICE: validate request
+AUTH-SERVICE->AUTH-DB: validate request
+AUTH-DB->AUTH-CACHE: validate request
+AUTH-DB<-AUTH-CACHE: validate response
+AUTH-SERVICE<-AUTH-DB: validate response
+AUTH-SERVER<-AUTH-SERVICE: validate response
+
+GATEWAY<-AUTH-SERVER: validate response
+note over AUTH-SERVER,GATEWAY#33FFA4:** {\n    serviceCode: CORPNET-GROUP,\n    username: SD_MAKER,\n    activeCompany: 2,\n    companyCodes: [2, 3]\n}**
+
+GATEWAY->CORPNET-API: forward request
+note over GATEWAY,CORPNET-API#33FFA4:** HTTP HEADERS\n    Service-Code: CORPNET-GROUP\n    User-Name: SD_MAKER\n    Active-Company: 2\n    Company-Codes: 2,3\n**
