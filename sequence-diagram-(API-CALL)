@@ -1,7 +1,7 @@
-title F5, AUTH SERVER, AND GEATEWAY (API CALL)
+title F5, GEATEWAY, AND AUTH SERVER (API CALL)
 actor USER#green
 entryspacing 1.9
-note over USER#yellow:CORPNET/PG/SOAPUP
+note over USER#yellow:CORPNET/PG/SOUP UP
 participant F5#FF3355
 participant GATEWAY#SILVER
 participant AUTH-SERVER#red
